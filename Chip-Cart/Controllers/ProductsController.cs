@@ -29,7 +29,42 @@ namespace Chip_Cart.Controllers
                 ProductDetails = products
             });
         }
-
+        [HttpGet("get_product_by_userid/{userid}")]
+        public IActionResult GetAllProductByUserid(int userid)
+        {
+            var product = _context.ProductModels.Where(u => u.userid == userid);
+            if (product == null)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "userid Not Found"
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                ProductDetails = product
+            });
+        }
+        [HttpGet("get_product_by_category/{categories}")]
+        public IActionResult GetproductbyCategory(string categories)
+        {
+            var product = _context.ProductModels.Where(c => c.categories == categories);
+            if (product == null)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "categories Not Found"
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                ProductDetails = product
+            });
+        }
         [HttpPost("addProduct")]
         public IActionResult AddProduct([FromBody] ProductsModel productobj)
         {
@@ -48,12 +83,8 @@ namespace Chip_Cart.Controllers
                     StatusCode = 200,
                     Message = "Product Added"
                 });
-
             }
-
-
         }
-
         [HttpPut("updateProduct")]
         public IActionResult UpdateProduct([FromBody] ProductsModel productobj)
         {
@@ -81,14 +112,12 @@ namespace Chip_Cart.Controllers
                     StatusCode = 200,
                     Message = "Product Added"
                 });
-
             }
         }
 
         [HttpDelete("deleteProduct/{id}")]
         public IActionResult DeleteProduct(int id)
         {
-
             var product = _context.ProductModels.Find(id);
             if (product == null)
             {
@@ -100,8 +129,6 @@ namespace Chip_Cart.Controllers
             }
             else
             {
-                product.createdAt = DateTime.Now;
-                product.updatedAt = DateTime.Now;
                 _context.Remove(product);
                 _context.SaveChanges();
                 return Ok(new
@@ -109,8 +136,25 @@ namespace Chip_Cart.Controllers
                     StatusCode = 200,
                     Message = "Product deleted"
                 });
-
             }
+        }
+        [HttpGet("SearchProduct/{title}")]
+        public IActionResult GetSearch(string title)
+        {
+            var product = _context.ProductModels.Where(u => u.title.Contains(title)).ToList();
+            if (product == null)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "title Not Found"
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                ProductDetails = product
+            });
         }
 
     }

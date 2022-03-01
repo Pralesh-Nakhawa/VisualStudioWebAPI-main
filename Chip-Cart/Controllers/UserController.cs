@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Chip_Cart.Controllers
@@ -14,6 +15,7 @@ namespace Chip_Cart.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private static string key = "abcd@123";
         private readonly UserDbContext _uContext;
         public UserController(UserDbContext userDbContext)
         {
@@ -59,8 +61,12 @@ namespace Chip_Cart.Controllers
             }
             else
             {
+
                 userobj.createdAt = DateTime.Now;
                 userobj.updatedAt = DateTime.Now;
+                userobj.password += key;
+                var toConvert = Encoding.UTF8.GetBytes(userobj.password);
+                userobj.password=Convert.ToBase64String(toConvert);
                 _uContext.userModels.Add(userobj);
                 _uContext.SaveChanges();
                 return Ok(new
@@ -81,8 +87,8 @@ namespace Chip_Cart.Controllers
                 return BadRequest();
             }
 
-            var product = _uContext.userModels.AsNoTracking().FirstOrDefault(x => x.id == userobj.id);
-            if (product == null)
+            var user = _uContext.userModels.AsNoTracking().FirstOrDefault(x => x.id == userobj.id);
+            if (user == null)
             {
                 return NotFound(new
                 {

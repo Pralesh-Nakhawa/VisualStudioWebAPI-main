@@ -36,6 +36,7 @@ namespace Chip_Cart
             services.AddControllers();
             services.AddDbContext<ProductDbContext>(option =>option.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<UserDbContext>(option => option.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<OrderDbContext>(option => option.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
